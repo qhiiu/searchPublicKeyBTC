@@ -297,8 +297,8 @@ GPUEngine::GPUEngine(Secp256K1* secp, int nbThreadGroup, int nbThreadPerGroup, i
 
 			Point targetPubkey;
 
-			// char* pubkey = "4EE2BE2D4E9F92D2F5A4A03058617DC45BEFE22938FEED5B7A6B7282DD74CBDD";
-			// targetPubkey.x.SetBase16("21e215ff6ab474d5b7e82436a518d5849c6bb665c36a014ad4387d0ec541ded7") ;
+					// char* pubkey = "4EE2BE2D4E9F92D2F5A4A03058617DC45BEFE22938FEED5B7A6B7282DD74CBDD";
+					// targetPubkey.x.SetBase16("21e215ff6ab474d5b7e82436a518d5849c6bb665c36a014ad4387d0ec541ded7") ;
 			targetPubkey.x.SetBase16(pubkey) ;
 			
 			CudaSafeCall(cudaHostAlloc(&arr_targetPubkey_pinned, 4 * sizeof(uint64_t), cudaHostAllocWriteCombined | cudaHostAllocMapped));
