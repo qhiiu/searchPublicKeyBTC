@@ -115,25 +115,6 @@ void run(){
 };
 
 int main(){
-	int xTime = 999; 
-	int sleepTime = 10; //fixx
-    std::cout << "sleepTime xT : "; std::cin >> sleepTime; std::cout<< endl;  //----------------------------------- fix
-
-
-	for (int i = 0; i < xTime; i++)
-	{
-		std::cout<< std::endl << std::endl << "xN =! -- sleep : "<< sleepTime << " s" << std::endl; 
-		run();
-		
-        // sleep time --- print coutdown
-        for (int j = sleepTime; j >= 0; j--)
-        {
-            sleep(1);      // Timer::SleepMillis(1000);
-            printf("----->  %d s  <-----",j);
-            fflush(stdout);
-            printf("\r");
-        }
-        printf("\n");
-	}
+	run();
 	return 0;
 };
