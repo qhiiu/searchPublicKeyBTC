@@ -5,12 +5,9 @@
 #include <vector>
 #include "SECP256k1.h"
 #include "GPU/GPUEngine.h"
-#ifdef WIN64
-#include <Windows.h>
-#endif
 
-#define CPU_GRP_SIZE (1024*2)
-// #define CPU_GRP_SIZE (1024*2*2)
+// #define CPU_GRP_SIZE 2048
+#define CPU_GRP_SIZE (2048 * 5)
 
 
 class KeyHunt;
@@ -34,8 +31,7 @@ class KeyHunt
 {
 
 public:
-	KeyHunt(bool useGpu, const std::string& outputFile, uint32_t maxFound, 
-		const std::string& rangeStart, const std::string& rangeEnd, bool& should_exit, char* pubkey);
+	KeyHunt(bool useGpu, const std::string& outputFile, const std::string& rangeStart, const std::string& rangeEnd, bool& should_exit, char* pubkey);
 
 	~KeyHunt();
 
@@ -70,7 +66,6 @@ private:
 	bool endOfSearch;
 	int nbGPUThread;
 	int nbFoundKey;
-	uint64_t targetCounter;
 
 	std::string outputFile;
 
@@ -79,12 +74,7 @@ private:
 	Int rangeDiff;
 	Int rangeDiff2;
 
-	uint32_t maxFound;
 	char* pubkey;
-
-
-
-	pthread_mutex_t  ghMutex;
 };
 
 #endif // KEYHUNTH

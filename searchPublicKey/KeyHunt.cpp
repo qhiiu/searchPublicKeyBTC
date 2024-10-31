@@ -20,21 +20,17 @@ Point _2Gn;
 
 // ----------------------------------------------------------------------------
 
-KeyHunt::KeyHunt(bool useGpu, const std::string& outputFile, uint32_t maxFound,
-	const std::string& rangeStart, const std::string& rangeEnd, bool& should_exit, char* pubkey)
+KeyHunt::KeyHunt(bool useGpu, const std::string& outputFile, const std::string& rangeStart, const std::string& rangeEnd, bool& should_exit, char* pubkey)
 {
 	this->pubkey = pubkey;
 	this->useGpu = useGpu;
 	this->outputFile = outputFile;
 	this->nbGPUThread = 0;
-	this->maxFound = maxFound;
 	this->rangeStart.SetBase16(rangeStart.c_str());
 	this->rangeEnd.SetBase16(rangeEnd.c_str());
 
 	this->rangeDiff2.Set(&this->rangeEnd);
 	this->rangeDiff2.Sub(&this->rangeStart);   // số keys cần quét 
-
-	this->targetCounter = 1;
 
 	secp = new Secp256K1();
 	secp->Init();
@@ -91,8 +87,6 @@ KeyHunt::~KeyHunt()
 
 void KeyHunt::output(std::string addr, std::string priv_wif, std::string priv_hex, std::string public_key)
 {
-	pthread_mutex_lock(&ghMutex);
-
 	FILE* f = stdout;
 	bool needToClose = false;
 
@@ -121,8 +115,6 @@ void KeyHunt::output(std::string addr, std::string priv_wif, std::string priv_he
 	printf("\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n");
 	if (needToClose)
 		fclose(f);
-
-	pthread_mutex_unlock(&ghMutex);
 }
 
 // ----------------------------------------------------------------------------
@@ -134,16 +126,8 @@ bool KeyHunt::checkPrivKey(std::string addr, Int& key, int32_t incr)
 
 	Point p = secp->ComputePublicKey(&k); //
 	std::string chkAddr = secp->GetAddress(1, p); // 
-
-	// std::cout<<std::endl <<"incr : "<< incr; 
-	// std::cout<<std::endl <<"2 - 2_priv_hex : "<< k.GetBase16().c_str(); 
-	// std::cout<<std::endl<<"k.GetBase16() = priv_hex : "<< k.GetBase16().c_str(); 
-	// std::cout<<std::endl<<"chkAddr = secp->GetAddress(mode,p)          : "<< chkAddr ;
-	// std::cout<<std::endl<<"addr = secp->GetAddress(it.mode, it.hash)   : "<< addr ;
-	// std::cout<<std::endl;
 	
 	output(addr, secp->GetPrivAddress(1, k), k.GetBase16(), secp->GetPublicKeyHex(1, p)); 
-	//-> output( addr,  priv_wif,                 priv_hex,              public_key)
 
 	return true;
 }
@@ -200,7 +184,7 @@ void KeyHunt::FindKeyGPU(TH_PARAM * ph)
 	Int tRangeEnd = ph->rangeEnd;
 
 	GPUEngine* GPU_Engine;
-	GPU_Engine = new GPUEngine(secp, ph->gridSizeX, ph->gridSizeY, ph->gpuId, maxFound, pubkey );  
+	GPU_Engine = new GPUEngine(secp, ph->gridSizeX, ph->gridSizeY, ph->gpuId, pubkey );  
 	printf("GPU info      : %s ", GPU_Engine->deviceName.c_str());
 
 	int nbThread = GPU_Engine->GetNbThread(); //6144
@@ -415,7 +399,7 @@ void KeyHunt::Search(std::vector<int> gpuId, std::vector<int> gridSize, bool& sh
 		lastCount = count;
 		lastGPUCount = gpuCount;
 		t0 = t1;
-		if (should_exit || nbFoundKey >= targetCounter || completedPerc > 100.5){
+		if (should_exit || nbFoundKey >= 1 || completedPerc > 100.5){
 			endOfSearch = true;
 		}	
 	}

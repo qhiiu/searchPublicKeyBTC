@@ -75,11 +75,8 @@ void run(){
 	// // char* pubkey = "4EE2BE2D4E9F92D2F5A4A03058617DC45BEFE22938FEED5B7A6B7282DD74CBDD"; //puzzle 66
 
 	string address = "16RGFo6hjq9ym6Pj7N5H7L1NR1rVPJyw2v";	
-	// string rangee = "4000000000000000000000000000000000:7fffffffffffffffffffffffffffffffff"; 
 	string rangee = "420ff00a0000666008000f000000000000:766ffaa00ffff123fffff55fffffffffff"; 
 	char* pubkey = "02145d2611c823a396ef6712ce0f712f09b9b4f3135e3e0aa3230fb9b6d08d1e16"; //puzzle 1351
-
-	uint32_t maxFound = 1;
 
 	Int rangeStart;
 	Int rangeEnd;
@@ -98,7 +95,6 @@ void run(){
 	}
 
 	printf("\n\n");
-	printf("MAX FOUND    : %d\n", maxFound);
 	printf("BTC ADDRESS  : %s\n", address.c_str());
 	std::cout<<"PUBKEY 	     : "<< pubkey << std::endl<< std::endl;
 	printf("OUTPUT FILE  : %s\n", outputFile.c_str());
@@ -106,7 +102,7 @@ void run(){
 	signal(SIGINT, CtrlHandler);
 
 	KeyHunt* v;
-	v = new KeyHunt(gpuEnable, outputFile,	maxFound, rangeStart.GetBase16(), rangeEnd.GetBase16(), should_exit, pubkey);
+	v = new KeyHunt(gpuEnable, outputFile, rangeStart.GetBase16(), rangeEnd.GetBase16(), should_exit, pubkey);
 
 	v->Search(gpuId, gridSize, should_exit);
 
